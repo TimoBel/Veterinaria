@@ -1,6 +1,5 @@
 package com.vetSystem.vet_system.Entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,7 +31,6 @@ public class Duenio {
     private String email;
 
     @OneToMany(mappedBy = "duenio", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
     private List<Mascota> mascotas;
 
 

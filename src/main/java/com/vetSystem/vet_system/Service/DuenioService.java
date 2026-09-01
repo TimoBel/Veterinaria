@@ -1,94 +1,78 @@
 package com.vetSystem.vet_system.Service;
 
+import com.vetSystem.vet_system.DTO.DuenioDTO;
 import com.vetSystem.vet_system.Entity.Duenio;
 import com.vetSystem.vet_system.Exception.ResourceNotFoundException;
+import com.vetSystem.vet_system.Mapper.DuenioMapper;
 import com.vetSystem.vet_system.Repository.DuenioRepository;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor(onConstructor_ = {@Autowired})
-public class DuenioService implements InterfaceService<Duenio> {
+@RequiredArgsConstructor
+public class DuenioService {
 
     private final DuenioRepository duenioRepository;
+    private final DuenioMapper duenioMapper;
 
-//    public Duenio registrarDuenio(Duenio duenio){
-//        if (duenioRepository.existsByDni(duenio.getDni())) {
-//            throw new RuntimeException(
-//                    "Ya existe un dueño con DNI: " + duenio.getDni()
-//            );
-//        }
-//
-//        return duenioRepository.save(duenio);
-//    }
-//
-//    public Duenio actualizarDuenio(Long id, Duenio duenioActualizado){
-//        Duenio duenio = buscarPorId(id);
-//
-//        duenio.setNombre(duenioActualizado.getNombre());
-//        duenio.setApellido(duenioActualizado.getApellido());
-//        duenio.setTelefono(duenioActualizado.getTelefono());
-//        duenio.setEmail(duenioActualizado.getEmail());
-//
-//        return duenioRepository.save(duenio);
-//    }
-//
-//    public void eliminarDuenio(Long id){
-//        Duenio duenio = buscarPorId(id);
-//        duenioRepository.delete(duenio);
-//    }
-//
-//    public Duenio buscarPorId(Long id){
-//        return duenioRepository.findById(id)
-//                .orElseThrow(() -> new ResourceNotFoundException("Duenio", id));
-//    }
-//
-//    public List<Duenio> listarTodos(){
-//        return duenioRepository.findAll();
-//    }
-
-    @Override
-    public Duenio registrarEntidad(Duenio duenio) {
-        return duenioRepository.save(duenio);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Optional<Duenio> buscarPorId(Long id) {
-        return duenioRepository.findById(id)
-                .map(duenio -> {
-                    duenio.getMascotas().size();
-                    return duenio;
-                });
-    }
-
-    @Override
-    public void eliminarEntidad(Long id) {
-        Optional<Duenio> duenio = duenioRepository.findById(id);
-        if(duenio.isPresent()){
-            duenioRepository.deleteById(id);
+    @Transactional
+    public DuenioDTO createDuenio(DuenioDTO dto) {
+        if (duenioRepository.existsByDni(dto.getDni())) {
+            throw new IllegalStateException("Ya existe un dueño con DNI: " + dto.getDni());
         }
+
+        Duenio duenio = duenioMapper.toEntity(dto);
+        duenio.setId(null);
+        return duenioMapper.toDto(duenioRepository.save(duenio));
     }
 
-    @Override
-    public Duenio modificarEntidad(Duenio duenio) {
-        return duenioRepository.save(duenio);
+    @Transactional(readOnly = true)
+    public DuenioDTO getDuenioById(Long id) {
+        return duenioMapper.toDto(buscarEntidadPorId(id));
     }
 
-    @Override
-    public List<Duenio> listarEntidades() {
-        return duenioRepository.findAll();
+    @Transactional
+    public DuenioDTO updateDuenio(Long id, DuenioDTO dto) {
+        Duenio duenio = buscarEntidadPorId(id);
+
+        if (!duenio.getDni().equals(dto.getDni()) && duenioRepository.existsByDni(dto.getDni())) {
+            throw new IllegalStateException("Ya existe un dueño con DNI: " + dto.getDni());
+        }
+
+        duenio.setNombre(dto.getNombre());
+        duenio.setApellido(dto.getApellido());
+        duenio.setDni(dto.getDni());
+        duenio.setTelefono(dto.getTelefono());
+        duenio.setEmail(dto.getEmail());
+
+        return duenioMapper.toDto(duenioRepository.save(duenio));
     }
 
-    @Override
-    public Optional<Duenio> buscarPorString(String nombre) {
-        return duenioRepository.findByNombre(nombre);
+    @Transactional
+    public void deleteDuenio(Long id) {
+        duenioRepository.delete(buscarEntidadPorId(id));
+    }
 
+    @Transactional(readOnly = true)
+    public List<DuenioDTO> getAllDuenios() {
+        return duenioRepository.findAll()
+                .stream()
+                .map(duenioMapper::toDto)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<DuenioDTO> findDuenioByNombre(String nombre) {
+        return duenioRepository.findByNombre(nombre)
+                .map(duenioMapper::toDto);
+    }
+
+    private Duenio buscarEntidadPorId(Long id) {
+        return duenioRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Duenio", id));
     }
 }
