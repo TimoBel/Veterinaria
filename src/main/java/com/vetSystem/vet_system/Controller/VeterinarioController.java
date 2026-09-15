@@ -4,6 +4,7 @@ import com.vetSystem.vet_system.DTO.VeterinarioDTO;
 import com.vetSystem.vet_system.Exception.ResourceNotFoundException;
 import com.vetSystem.vet_system.Service.VeterinarioService;
 import lombok.RequiredArgsConstructor;
+import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,7 +40,7 @@ public class VeterinarioController {
     }
 
     @PostMapping
-    public ResponseEntity<?> crearVeterinario(@RequestBody VeterinarioDTO dto) {
+    public ResponseEntity<?> crearVeterinario(@Valid @RequestBody VeterinarioDTO dto) {
         try {
             VeterinarioDTO creado = veterinarioService.createVeterinario(dto);
             return ResponseEntity.status(HttpStatus.CREATED).body(creado);
@@ -51,7 +52,7 @@ public class VeterinarioController {
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizarVeterinario(
             @PathVariable Long id,
-            @RequestBody VeterinarioDTO dto) {
+            @Valid @RequestBody VeterinarioDTO dto) {
         try {
             return ResponseEntity.ok(veterinarioService.updateVeterinario(id, dto));
         } catch (ResourceNotFoundException e) {

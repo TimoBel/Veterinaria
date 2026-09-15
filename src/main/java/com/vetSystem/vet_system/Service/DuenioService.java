@@ -2,6 +2,7 @@ package com.vetSystem.vet_system.Service;
 
 import com.vetSystem.vet_system.DTO.DuenioDTO;
 import com.vetSystem.vet_system.Entity.Duenio;
+import com.vetSystem.vet_system.Exception.DuplicateResourceException;
 import com.vetSystem.vet_system.Exception.ResourceNotFoundException;
 import com.vetSystem.vet_system.Mapper.DuenioMapper;
 import com.vetSystem.vet_system.Repository.DuenioRepository;
@@ -22,7 +23,7 @@ public class DuenioService {
     @Transactional
     public DuenioDTO createDuenio(DuenioDTO dto) {
         if (duenioRepository.existsByDni(dto.getDni())) {
-            throw new IllegalStateException("Ya existe un dueño con DNI: " + dto.getDni());
+            throw new DuplicateResourceException("Ya existe un dueño con DNI: " + dto.getDni());
         }
 
         Duenio duenio = duenioMapper.toEntity(dto);
@@ -40,7 +41,7 @@ public class DuenioService {
         Duenio duenio = buscarEntidadPorId(id);
 
         if (!duenio.getDni().equals(dto.getDni()) && duenioRepository.existsByDni(dto.getDni())) {
-            throw new IllegalStateException("Ya existe un dueño con DNI: " + dto.getDni());
+            throw new DuplicateResourceException("Ya existe un dueño con DNI: " + dto.getDni());
         }
 
         duenio.setNombre(dto.getNombre());

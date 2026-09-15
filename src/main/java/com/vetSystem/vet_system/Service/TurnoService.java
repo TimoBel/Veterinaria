@@ -6,6 +6,7 @@ import com.vetSystem.vet_system.Entity.Mascota;
 import com.vetSystem.vet_system.Entity.Turno;
 import com.vetSystem.vet_system.Entity.Veterinario;
 import com.vetSystem.vet_system.Exception.ResourceNotFoundException;
+import com.vetSystem.vet_system.Exception.TurnoSuperpuestoException;
 import com.vetSystem.vet_system.Mapper.TurnoMapper;
 import com.vetSystem.vet_system.Repository.MascotaRepository;
 import com.vetSystem.vet_system.Repository.TurnoRepository;
@@ -40,7 +41,7 @@ public class TurnoService {
                 turnoRequestDTO.getVeterinarioId(),
                 turnoRequestDTO.getFecha(),
                 turnoRequestDTO.getHora())) {
-            throw new IllegalStateException(
+            throw new TurnoSuperpuestoException(
                     "El veterinario ya tiene un turno en ese horario");
         }
 

@@ -4,6 +4,7 @@ import com.vetSystem.vet_system.DTO.MascotaDTO;
 import com.vetSystem.vet_system.Exception.ResourceNotFoundException;
 import com.vetSystem.vet_system.Service.MascotaService;
 import lombok.RequiredArgsConstructor;
+import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,7 +26,7 @@ public class MascotaController {
     private final MascotaService mascotaService;
 
     @PostMapping
-    public ResponseEntity<?> registrarMascota(@RequestBody MascotaDTO dto) {
+    public ResponseEntity<?> registrarMascota(@Valid @RequestBody MascotaDTO dto) {
         try {
             MascotaDTO creada = mascotaService.createMascota(dto);
             return ResponseEntity.status(HttpStatus.CREATED).body(creada);
@@ -50,7 +51,7 @@ public class MascotaController {
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizarMascota(
             @PathVariable Long id,
-            @RequestBody MascotaDTO dto) {
+            @Valid @RequestBody MascotaDTO dto) {
         try {
             return ResponseEntity.ok(mascotaService.updateMascota(id, dto));
         } catch (ResourceNotFoundException e) {

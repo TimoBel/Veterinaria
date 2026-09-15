@@ -5,6 +5,7 @@ import com.vetSystem.vet_system.DTO.TurnoResponseDTO;
 import com.vetSystem.vet_system.Exception.ResourceNotFoundException;
 import com.vetSystem.vet_system.Service.TurnoService;
 import lombok.RequiredArgsConstructor;
+import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class TurnoController {
     private final TurnoService turnoService;
 
     @PostMapping
-    public ResponseEntity<?> guardarTurno(@RequestBody TurnoRequestDTO turnoRequestDTO) {
+    public ResponseEntity<?> guardarTurno(@Valid @RequestBody TurnoRequestDTO turnoRequestDTO) {
         try {
             TurnoResponseDTO creado = turnoService.crearTurno(turnoRequestDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(creado);
