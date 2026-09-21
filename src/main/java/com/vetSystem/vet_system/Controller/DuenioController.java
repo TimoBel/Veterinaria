@@ -5,7 +5,7 @@ import com.vetSystem.vet_system.Exception.ResourceNotFoundException;
 import com.vetSystem.vet_system.Service.DuenioService;
 import com.vetSystem.vet_system.Service.MascotaService;
 import lombok.RequiredArgsConstructor;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
