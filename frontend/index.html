@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patitas Felices</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<nav class="navbar navbar-expand bg-primary navbar-dark">
+    <div class="container">
+        <span class="navbar-brand fw-semibold">Patitas Felices</span>
+        <div class="navbar-nav ms-auto">
+            <button class="nav-link active border-0 bg-transparent" type="button" data-recurso="duenios">Dueños</button>
+            <button class="nav-link border-0 bg-transparent" type="button" data-recurso="mascotas">Mascotas</button>
+            <button class="nav-link border-0 bg-transparent" type="button" data-recurso="veterinarios">Veterinarios</button>
+            <button class="nav-link border-0 bg-transparent" type="button" data-recurso="turnos">Turnos</button>
+        </div>
+    </div>
+</nav>
+
+<main class="container py-5">
+    <div class="mb-4">
+        <h1 id="tituloSeccion" class="h2 mb-1">Dueños</h1>
+        <p id="descripcionSeccion" class="text-muted mb-0">Dueños registrados en la clínica.</p>
+    </div>
+
+    <div id="mensajeGeneral" class="alert d-none" role="alert"></div>
+
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-striped mb-0">
+                <thead id="cabeceraTabla" class="table-light"></thead>
+                <tbody id="tablaDatos">
+                <tr>
+                    <td class="text-center text-muted py-4">Cargando información...</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<script>
+    const API_BASE = "http://localhost:8080";
+    const tituloSeccion = document.getElementById("tituloSeccion");
+    const descripcionSeccion = document.getElementById("descripcionSeccion");
+    const cabeceraTabla = document.getElementById("cabeceraTabla");
+    const tablaDatos = document.getElementById("tablaDatos");
+    const mensajeGeneral = document.getElementById("mensajeGeneral");
+
+    const recursos = {
+        duenios: {
+            titulo: "Dueños",
+            descripcion: "Dueños registrados en la clínica.",
+            ruta: "/api/duenios",
+            vacio: "No hay dueños registrados.",
+            columnas: [
+                { titulo: "ID", valor: (duenio) => duenio.id },
+                { titulo: "Nombre y apellido", valor: (duenio) => `${duenio.nombre ?? ""} ${duenio.apellido ?? ""}`.trim() },
+                { titulo: "DNI", valor: (duenio) => duenio.dni },
+                { titulo: "Teléfono", valor: (duenio) => duenio.telefono },
+                { titulo: "Email", valor: (duenio) => duenio.email }
+            ]
+        },
+        mascotas: {
+            titulo: "Mascotas",
+            descripcion: "Mascotas registradas en la clínica.",
+            ruta: "/api/mascotas",
+            vacio: "No hay mascotas registradas.",
+            columnas: [
+                { titulo: "ID", valor: (mascota) => mascota.id },
+                { titulo: "Nombre", valor: (mascota) => mascota.nombre },
+                { titulo: "Especie", valor: (mascota) => mascota.especie },
+                { titulo: "Raza", valor: (mascota) => mascota.raza },
+                { titulo: "Fecha de nacimiento", valor: (mascota) => mascota.fechaNacimiento },
+                { titulo: "Dueño", valor: (mascota) => mascota.duenioNombre }
+            ]
+        },
+        veterinarios: {
+            titulo: "Veterinarios",
+            descripcion: "Veterinarios registrados en la clínica.",
+            ruta: "/api/veterinarios",
+            vacio: "No hay veterinarios registrados.",
+            columnas: [
+                { titulo: "ID", valor: (veterinario) => veterinario.id },
+                { titulo: "Nombre y apellido", valor: (veterinario) => `${veterinario.nombre ?? ""} ${veterinario.apellido ?? ""}`.trim() },
+                { titulo: "Matrícula", valor: (veterinario) => veterinario.matricula },
+                { titulo: "Especialidad", valor: (veterinario) => veterinario.especialidad }
+            ]
+        },
+        turnos: {
+            titulo: "Turnos",
+            descripcion: "Turnos registrados en la clínica.",
+            ruta: "/api/turnos",
+            vacio: "No hay turnos registrados.",
+            columnas: [
+                { titulo: "ID", valor: (turno) => turno.id },
+                { titulo: "Fecha", valor: (turno) => turno.fecha },
+                { titulo: "Hora", valor: (turno) => turno.hora },
+                { titulo: "Motivo", valor: (turno) => turno.motivo },
+                { titulo: "Mascota", valor: (turno) => turno.mascotaNombre },
+                { titulo: "Veterinario", valor: (turno) => turno.veterinarioNombre },
+                { titulo: "Estado", valor: (turno) => turno.estado }
+            ]
+        }
+    };
+
+    function mostrarMensaje(texto) {
+        mensajeGeneral.textContent = texto;
+        mensajeGeneral.className = "alert alert-danger";
+    }
+
+    function ocultarMensaje() {
+        mensajeGeneral.textContent = "";
+        mensajeGeneral.className = "alert d-none";
+    }
+
+    async function obtenerMensajeError(respuesta) {
+        const texto = await respuesta.text();
+
+        if (!texto) {
+            return `Error ${respuesta.status}: no se pudo obtener la información.`;
+        }
+
+        try {
+            const error = JSON.parse(texto);
+            return error.mensaje || error.message || error.error || texto;
+        } catch {
+            return texto;
+        }
+    }
+
+    function actualizarCabecera(configuracion) {
+        cabeceraTabla.innerHTML = "";
+        const fila = document.createElement("tr");
+
+        configuracion.columnas.forEach((columna) => {
+            const celda = document.createElement("th");
+            celda.textContent = columna.titulo;
+            fila.appendChild(celda);
+        });
+
+        cabeceraTabla.appendChild(fila);
+    }
+
+    function mostrarRegistros(registros, configuracion) {
+        tablaDatos.innerHTML = "";
+
+        if (registros.length === 0) {
+            tablaDatos.innerHTML = `
+                <tr>
+                    <td colspan="${configuracion.columnas.length}" class="text-center text-muted py-4">${configuracion.vacio}</td>
+                </tr>`;
+            return;
+        }
+
+        registros.forEach((registro) => {
+            const fila = document.createElement("tr");
+
+            configuracion.columnas.forEach((columna) => {
+                const celda = document.createElement("td");
+                celda.textContent = columna.valor(registro) ?? "-";
+                fila.appendChild(celda);
+            });
+
+            tablaDatos.appendChild(fila);
+        });
+    }
+
+    async function cargarRecurso(nombreRecurso) {
+        const configuracion = recursos[nombreRecurso];
+        tituloSeccion.textContent = configuracion.titulo;
+        descripcionSeccion.textContent = configuracion.descripcion;
+        actualizarCabecera(configuracion);
+        ocultarMensaje();
+
+        tablaDatos.innerHTML = `
+            <tr>
+                <td colspan="${configuracion.columnas.length}" class="text-center text-muted py-4">Cargando información...</td>
+            </tr>`;
+
+        try {
+            const respuesta = await fetch(`${API_BASE}${configuracion.ruta}`);
+
+            if (!respuesta.ok) {
+                throw new Error(await obtenerMensajeError(respuesta));
+            }
+
+            const registros = await respuesta.json();
+            mostrarRegistros(Array.isArray(registros) ? registros : [], configuracion);
+        } catch (error) {
+            tablaDatos.innerHTML = `
+                <tr>
+                    <td colspan="${configuracion.columnas.length}" class="text-center text-danger py-4">No se pudo cargar la información.</td>
+                </tr>`;
+            mostrarMensaje(error.message);
+        }
+    }
+
+    document.querySelectorAll("[data-recurso]").forEach((boton) => {
+        boton.addEventListener("click", () => {
+            document.querySelectorAll("[data-recurso]").forEach((item) => item.classList.remove("active"));
+            boton.classList.add("active");
+            cargarRecurso(boton.dataset.recurso);
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", () => cargarRecurso("duenios"));
+</script>
+</body>
+</html>
