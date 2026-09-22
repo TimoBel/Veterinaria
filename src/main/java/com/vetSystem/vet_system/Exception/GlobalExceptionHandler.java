@@ -61,6 +61,18 @@ public class GlobalExceptionHandler {
                 request);
     }
 
+    @ExceptionHandler(StockInsuficienteException.class)
+    public ResponseEntity<ErrorResponse> manejarStockInsuficiente(
+            StockInsuficienteException exception,
+            HttpServletRequest request) {
+
+        return construirRespuesta(
+                HttpStatus.UNPROCESSABLE_ENTITY,
+                exception.getMessage(),
+                request
+        );
+    }
+
     private ResponseEntity<ErrorResponse> construirRespuesta(
             HttpStatus status,
             String mensaje,
@@ -75,4 +87,17 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(status).body(errorResponse);
     }
+
+    @ExceptionHandler(CupoMascotasException.class)
+    public ResponseEntity<ErrorResponse> manejarCupoMascotas(
+            CupoMascotasException exception,
+            HttpServletRequest request) {
+
+        return construirRespuesta(
+                HttpStatus.UNPROCESSABLE_ENTITY,
+                exception.getMessage(),
+                request
+        );
+    }
+
 }

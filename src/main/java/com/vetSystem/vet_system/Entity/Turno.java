@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -39,4 +41,13 @@ public class Turno {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "veterinario_id", nullable = false)
     private Veterinario veterinario;
+
+//    Esto es una tabla intermedia para relacionar turno con medicamentos
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "turno_medicamento",
+            joinColumns = @JoinColumn(name = "turno_id"),
+            inverseJoinColumns = @JoinColumn(name = "medicamento_id")
+    )
+    private List<Medicamento> medicamentos = new ArrayList<>();
 }

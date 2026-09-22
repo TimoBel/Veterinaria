@@ -1,5 +1,6 @@
 package com.vetSystem.vet_system.Controller;
 
+import com.vetSystem.vet_system.DTO.MedicamentoResponseDTO;
 import com.vetSystem.vet_system.DTO.TurnoRequestDTO;
 import com.vetSystem.vet_system.DTO.TurnoResponseDTO;
 import com.vetSystem.vet_system.Exception.ErrorResponse;
@@ -82,4 +83,17 @@ public class TurnoController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @Operation(summary = "Listar los medicamentos de un turno")
+    @GetMapping("/{id}/medicamentos")
+    public ResponseEntity<List<MedicamentoResponseDTO>> listarMedicamentosDelTurno(@PathVariable Long id) {
+        return ResponseEntity.ok(turnoService.listarMedicamentosDelTurno(id));
+    }
+
+    @Operation(summary = "Asociar un medicamento a un turno")
+    @PostMapping("/{turnoId}/medicamentos/{medicamentoId}")
+    public ResponseEntity<MedicamentoResponseDTO> asociarMedicamento(@PathVariable Long turnoId,@PathVariable Long medicamentoId) {
+        return ResponseEntity.ok(turnoService.asociarMedicamento(turnoId, medicamentoId));
+    }
+
 }

@@ -3,6 +3,7 @@ package com.vetSystem.vet_system.Service;
 import com.vetSystem.vet_system.DTO.MascotaDTO;
 import com.vetSystem.vet_system.Entity.Duenio;
 import com.vetSystem.vet_system.Entity.Mascota;
+import com.vetSystem.vet_system.Exception.CupoMascotasException;
 import com.vetSystem.vet_system.Exception.ResourceNotFoundException;
 import com.vetSystem.vet_system.Mapper.MascotaMapper;
 import com.vetSystem.vet_system.Repository.DuenioRepository;
@@ -29,6 +30,10 @@ public class MascotaService {
         }
 
         Duenio duenio = buscarDuenioPorId(dto.getDuenioId());
+
+        if (mascotaRepository.countByDuenioId(duenio.getId()) >= 5) {
+            throw new CupoMascotasException(duenio.getId());
+        }
 
         if (mascotaRepository.existsByNombreAndDuenioId(dto.getNombre(), duenio.getId())) {
             throw new IllegalStateException(
