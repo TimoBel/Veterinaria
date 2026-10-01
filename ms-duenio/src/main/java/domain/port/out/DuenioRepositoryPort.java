@@ -9,13 +9,13 @@ import java.util.Optional;
 
 public interface DuenioRepositoryPort {
  //quiero buscar por nombre HQL
-    Optional<Duenio> findByNombre(String nombre);
-    Optional<Duenio> findByEmail(String email);
-    Optional<Duenio> findByNombreAndApellido(String nombre, String apellido);
-    boolean existsByEmail(String email);
-    boolean existsByNombre(String nombre);
-    List<Duenio> findAll();
-    Duenio save(Duenio duenio);
-    Duenio findById(Long id);
-    void deleteById(Long id);
+    Optional<Duenio> buscarPorNombre(String nombre);
+    Optional<Duenio> buscarPorEmail(String email);
+    Optional<Duenio> buscarPorNombreYApellido(String nombre, String apellido);
+    boolean existePorEmail(String email);
+    boolean existePorNombre(String nombre);
+    List<Duenio> buscarTodos();
+    Duenio guardar(Duenio duenio);
+    Duenio buscarPorId(Long id);
+    void eliminarPorId(Long id);
 }
