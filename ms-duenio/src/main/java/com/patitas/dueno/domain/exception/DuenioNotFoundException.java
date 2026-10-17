@@ -1,4 +1,4 @@
-package domain.exception;
+package com.patitas.dueno.domain.exception;
 
 public class DuenioNotFoundException extends RuntimeException {
     public DuenioNotFoundException(Long id) {

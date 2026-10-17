@@ -1,8 +1,6 @@
-package domain.port.out;
+package com.patitas.dueno.domain.port.out;
 
-import domain.model.Duenio;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import com.patitas.dueno.domain.model.Duenio;
 
 import java.util.List;
 import java.util.Optional;

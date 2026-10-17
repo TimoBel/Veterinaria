@@ -1,6 +1,6 @@
-package domain.port.in;
+package com.patitas.dueno.domain.port.in;
 
-import domain.model.Duenio;
+import com.patitas.dueno.domain.model.Duenio;
 
 import java.util.List;
 //es una puerta de entrada. Define que puede hacer con los duenios. No deberia decir COMO.

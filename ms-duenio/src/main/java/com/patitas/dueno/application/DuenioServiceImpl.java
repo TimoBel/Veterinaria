@@ -1,10 +1,10 @@
-package application;
+package com.patitas.dueno.application;
 
-import domain.exception.DuenioNotFoundException;
-import domain.exception.DuplicateEmailException;
-import domain.model.Duenio;
-import domain.port.in.DuenioService;
-import domain.port.out.DuenioRepositoryPort;
+import com.patitas.dueno.domain.exception.DuenioNotFoundException;
+import com.patitas.dueno.domain.exception.DuplicateEmailException;
+import com.patitas.dueno.domain.model.Duenio;
+import com.patitas.dueno.domain.port.in.DuenioService;
+import com.patitas.dueno.domain.port.out.DuenioRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +35,10 @@ public class DuenioServiceImpl implements DuenioService {
     @Transactional
     public Duenio actualizar(Long id, Duenio duenio) {
         Duenio duenioExistente = buscarPorId(id);
+        Duenio duenioConEmail = duenioRepository.buscarPorEmail(duenio.getEmail()).orElse(null);
+        if (duenioConEmail != null && !id.equals(duenioConEmail.getId())) {
+            throw new DuplicateEmailException(duenio.getEmail());
+        }
         duenioExistente.setNombre(duenio.getNombre());
         duenioExistente.setApellido(duenio.getApellido());
         duenioExistente.setTelefono(duenio.getTelefono());

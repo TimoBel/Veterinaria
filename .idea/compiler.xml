@@ -6,18 +6,21 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="ms-duenio" />
         <module name="ms-dueno" />
+        <module name="ms-duenio" />
+        <module name="ms-mascota" />
+        <module name="ms-turno" />
+        <module name="ms-veterinario" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="ms-duenio" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="ms-duenio" options="-parameters" />
       <module name="ms-dueno" options="-parameters" />
+      <module name="ms-mascota" options="-parameters" />
+      <module name="ms-turno" options="-parameters" />
+      <module name="ms-veterinario" options="-parameters" />
     </option>
   </component>
 </project>

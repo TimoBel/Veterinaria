@@ -1,7 +1,7 @@
-package adapter;
+package com.patitas.dueno.adapter.out.persistence;
 
-import domain.model.Duenio;
-import domain.port.out.DuenioRepositoryPort;
+import com.patitas.dueno.domain.model.Duenio;
+import com.patitas.dueno.domain.port.out.DuenioRepositoryPort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

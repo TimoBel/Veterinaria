@@ -1,4 +1,4 @@
-package domain.exception;
+package com.patitas.dueno.domain.exception;
 
 public class DuplicateEmailException extends RuntimeException {
     public DuplicateEmailException(String email) {
