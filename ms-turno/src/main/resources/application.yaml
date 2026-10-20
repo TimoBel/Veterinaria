@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: ms-turno
+  datasource:
+    url: jdbc:mysql://localhost:3306/turno_db
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+server:
+  port: 8084

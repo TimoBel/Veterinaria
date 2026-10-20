@@ -1,0 +1,8 @@
+# Archivos generados al compilar cada modulo Maven.
+**/target/
+
+# Configuracion local del IDE y logs de ejecucion.
+.idea/
+**/.idea/
+*.iml
+*.log
