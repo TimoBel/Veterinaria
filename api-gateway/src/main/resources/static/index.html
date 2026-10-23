@@ -4,39 +4,70 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patitas Felices</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-B/GM4XqrwHnWXNOWMbloTmrYXZg10cakYGmpfsR/bbzQ6JAJI4ihuyADKLnBgrCe" crossorigin="anonymous">
-    <script type="module" src="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-1a/pXj49ZQ1aHEmrJ+gMw1otqoVsYwlEnlD8mIfY2TV03r20Y0CN7uqx1tQogjPL" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="/app.js" defer></script>
 </head>
-<body>
-<nav class="navbar md:navbar-expand bg-1" aria-label="Navegación principal">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/">Patitas Felices</a>
-        <button class="btn-icon navbar-toggler" type="button" data-bs-toggle="drawer" data-bs-target="#navbarDrawer" aria-controls="navbarDrawer" aria-expanded="false" aria-label="Abrir menú">
-            <span class="navbar-toggler-icon" aria-hidden="true"></span>
-        </button>
-        <dialog class="drawer drawer-end" tabindex="-1" id="navbarDrawer" aria-labelledby="navbarDrawerLabel">
-            <div class="drawer-header">
-                <h5 class="drawer-title" id="navbarDrawerLabel">Menú</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="drawer" aria-label="Cerrar menú"></button>
+<body class="bg-light">
+    <nav class="navbar bg-white border-bottom" aria-label="Navegación principal">
+        <div class="container gap-3 py-2">
+            <a class="navbar-brand mb-0" href="/">Patitas Felices</a>
+            <div id="navigation" class="nav nav-pills flex-wrap gap-1">
+                <button class="nav-link active" type="button" data-section="duenos" aria-current="page">Dueños</button>
+                <button class="nav-link" type="button" data-section="mascotas">Mascotas</button>
+                <button class="nav-link" type="button" data-section="veterinarios">Veterinarios</button>
+                <button class="nav-link" type="button" data-section="turnos">Turnos</button>
             </div>
-            <div class="drawer-body mb-2 md:mb-0">
-                <ul class="nav navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/api/duenos">Dueños</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/api/mascotas">Mascotas</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/api/veterinarios">Veterinarios</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/api/turnos">Turnos</a>
-                    </li>
-                </ul>
-            </div>
-        </dialog>
-    </div>
-</nav>
+        </div>
+    </nav>
+
+    <main class="container py-4">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+            <h1 id="section-title" class="h3 mb-0">Dueños</h1>
+            <button id="refresh" class="btn btn-outline-secondary btn-sm" type="button">Actualizar listado</button>
+        </div>
+
+        <div id="message" class="alert d-none" role="status" aria-live="polite"></div>
+        <div id="confirmation" class="alert alert-warning d-none" role="alert">
+            <p id="confirmation-text" class="mb-2"></p>
+            <button id="confirm-action" class="btn btn-danger btn-sm" type="button">Confirmar</button>
+            <button id="dismiss-action" class="btn btn-outline-secondary btn-sm" type="button">Volver</button>
+        </div>
+
+        <div class="row g-4">
+            <section class="col-lg-8" aria-label="Listado">
+                <div class="card">
+                    <div class="card-header bg-white d-flex align-items-center justify-content-between">
+                        <h2 class="h6 mb-0">Listado</h2>
+                        <span id="record-count" class="text-secondary small" aria-live="polite"></span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover align-middle mb-0">
+                            <caption id="table-caption" class="visually-hidden">Listado de dueños</caption>
+                            <thead><tr id="table-head"></tr></thead>
+                            <tbody id="table-body" aria-live="polite"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section class="col-lg-4" aria-labelledby="form-title">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 id="form-title" class="h5">Nuevo dueño</h2>
+                        <p class="text-secondary small">Los campos con * son obligatorios.</p>
+                        <p id="form-help" class="alert alert-warning d-none" role="status"></p>
+                        <form id="record-form">
+                            <fieldset id="form-fields" disabled></fieldset>
+                            <div class="d-flex flex-wrap gap-2 mt-3">
+                                <button id="save" class="btn btn-primary" type="submit" disabled>Guardar</button>
+                                <button id="reset-form" class="btn btn-outline-secondary" type="button">Limpiar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <noscript><p class="alert alert-warning mt-3">Activá JavaScript para usar los formularios.</p></noscript>
+    </main>
 </body>
 </html>
