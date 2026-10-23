@@ -2,8 +2,24 @@ server:
   port: 8084
 
 spring:
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connectTimeout: 3000
+            readTimeout: 5000
+      compression:
+        request:
+          enabled: true
+        response:
+          enabled: true
   datasource:
     url: jdbc:mysql://localhost:3306/turno_db
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+logging:
+  level:
+    com.patitas.turno.adapter.out.feign: DEBUG

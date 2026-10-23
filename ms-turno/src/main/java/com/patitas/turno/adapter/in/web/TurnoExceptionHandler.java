@@ -1,7 +1,10 @@
 package com.patitas.turno.adapter.in.web;
 
+import com.patitas.turno.domain.exception.MascotaNotFoundException;
 import com.patitas.turno.domain.exception.TurnoNotFoundException;
 import com.patitas.turno.domain.exception.TurnoSuperpuestoException;
+import com.patitas.turno.domain.exception.VeterinarioNotFoundException;
+import feign.FeignException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -22,6 +25,22 @@ public class TurnoExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(TurnoNotFoundException.class)
     public ResponseEntity<ProblemDetail> handleNotFound(TurnoNotFoundException exception) {
         return problem(HttpStatus.NOT_FOUND, "Turno no encontrado", exception.getMessage());
+    }
+
+    @ExceptionHandler(MascotaNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handleMascota(MascotaNotFoundException exception) {
+        return problem(HttpStatus.NOT_FOUND, "Mascota no encontrada", exception.getMessage());
+    }
+
+    @ExceptionHandler(VeterinarioNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handleVet(VeterinarioNotFoundException exception) {
+        return problem(HttpStatus.NOT_FOUND, "Veterinario no encontrado", exception.getMessage());
+    }
+
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity<ProblemDetail> handleFeign(FeignException exception) {
+        return problem(HttpStatus.SERVICE_UNAVAILABLE, "Servicio remoto no disponible",
+                "Servicio remoto no disponible: " + exception.getMessage());
     }
 
     @ExceptionHandler(TurnoSuperpuestoException.class)

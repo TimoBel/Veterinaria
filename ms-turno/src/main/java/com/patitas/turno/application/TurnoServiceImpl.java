@@ -1,11 +1,15 @@
 package com.patitas.turno.application;
 
+import com.patitas.turno.domain.exception.MascotaNotFoundException;
 import com.patitas.turno.domain.exception.TurnoNotFoundException;
 import com.patitas.turno.domain.exception.TurnoSuperpuestoException;
+import com.patitas.turno.domain.exception.VeterinarioNotFoundException;
 import com.patitas.turno.domain.model.EstadoTurno;
 import com.patitas.turno.domain.model.Turno;
 import com.patitas.turno.domain.port.in.TurnoService;
+import com.patitas.turno.domain.port.out.MascotaServicePort;
 import com.patitas.turno.domain.port.out.TurnoRepositoryPort;
+import com.patitas.turno.domain.port.out.VeterinarioServicePort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +21,8 @@ import java.util.List;
 public class TurnoServiceImpl implements TurnoService {
 
     private final TurnoRepositoryPort turnoRepository;
+    private final MascotaServicePort mascotaService;
+    private final VeterinarioServicePort veterinarioService;
 
     @Override
     public List<Turno> listarTodos() {
@@ -45,6 +51,12 @@ public class TurnoServiceImpl implements TurnoService {
     @Override
     @Transactional
     public Turno registrar(Turno turno) {
+        if (!mascotaService.existsById(turno.getMascotaId())) {
+            throw new MascotaNotFoundException(turno.getMascotaId());
+        }
+        if (!veterinarioService.existsById(turno.getVeterinarioId())) {
+            throw new VeterinarioNotFoundException(turno.getVeterinarioId());
+        }
         validarDisponibilidad(turno, null);
         turno.setEstado(EstadoTurno.PENDIENTE);
         return turnoRepository.guardar(turno);

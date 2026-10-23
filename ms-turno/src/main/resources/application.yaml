@@ -1,6 +1,8 @@
 spring:
   application:
     name: ms-turno
+  config:
+    import: "optional:configserver:http://localhost:8888"
   datasource:
     url: jdbc:mysql://localhost:3306/turno_db
     username: root
