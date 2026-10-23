@@ -11,7 +11,7 @@ Proyecto educativo con cuatro microservicios. Cada uno tiene su propia base MySQ
 
 ## Ejecutar
 
-Se necesitan Java 21, Maven y MySQL activo en localhost:3306. Las cuatro bases deben existir. El usuario y la clave se configuran en el application.yaml de cada modulo.
+Se necesitan Java 21, Maven y MySQL activo en localhost:3306. Las cuatro bases deben existir. El usuario y la clave de duenio se configuran en `config-server/src/main/resources/config/ms-duenio.yml`; los otros tres servicios todavia los leen de su `application.yaml` local.
 
 Desde esta carpeta:
 
@@ -26,6 +26,30 @@ mvn -pl ms-mascota spring-boot:run
 ```
 
 Tambien se puede ejecutar su clase principal desde IntelliJ. Swagger esta en `http://localhost:PUERTO/swagger-ui/index.html`. Detener la instancia anterior antes de volver a iniciarla para liberar el puerto.
+
+## Configuracion centralizada
+
+El modulo `config-server` lee los YAML de `config-server/src/main/resources/config/`, dentro de este mismo repositorio, usando el modo `native`.
+
+```shell
+mvn -pl config-server spring-boot:run
+```
+
+En `http://localhost:8888/ms-duenio/default` se puede consultar la configuracion comun y la de duenio. Tambien estan disponibles `ms-mascota/default`, `ms-veterinario/default` y `ms-turno/default` en el mismo puerto.
+
+`ms-duenio` obtiene la configuracion de base de datos, JPA y Eureka desde Config Server. Los otros tres servicios todavia usan su configuracion local.
+
+Para ejecutar duenio, iniciar en este orden y dejar las tres aplicaciones funcionando: `ConfigServerApplication` -> `EurekaServerApplication` -> `MsDuenioApplication`.
+
+## Actuator en duenio
+
+Actuator permite consultar el estado y los datos de `ms-duenio`:
+
+| URL | Que muestra |
+| --- | --- |
+| http://localhost:8081/actuator/health | Estado del servicio y de la base de datos. |
+| http://localhost:8081/actuator/info | Nombre, descripcion y version del servicio. |
+| http://localhost:8081/actuator/metrics | Lista de metricas disponibles. |
 
 ## Arquitectura: que hace cada parte
 
